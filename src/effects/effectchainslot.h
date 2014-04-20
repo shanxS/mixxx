@@ -106,8 +106,8 @@ class EffectChainSlot : public QObject {
     ControlPushButton* m_pControlChainEnabled;
     ControlObject* m_pControlChainMix;
     ControlObject* m_pControlChainParameter;
-    ControlObject* m_pControlChainNextPreset;
-    ControlObject* m_pControlChainPrevPreset;
+    ControlPushButton* m_pControlChainNextPreset;
+    ControlPushButton* m_pControlChainPrevPreset;
 
     QMap<QString, ControlObject*> m_channelEnableControls;
 

@@ -35,11 +35,15 @@ EffectChainSlot::EffectChainSlot(QObject* pParent, unsigned int iChainNumber)
     connect(m_pControlChainParameter, SIGNAL(valueChanged(double)),
             this, SLOT(slotControlChainParameter(double)));
 
-    m_pControlChainNextPreset = new ControlObject(ConfigKey(m_group, "next_chain"));
+    m_pControlChainNextPreset = new ControlPushButton(ConfigKey(m_group, "next_chain"));
+    // actually make it a push button and set it to toggle.
+    m_pControlChainNextPreset->setButtonMode(ControlPushButton::TOGGLE);
     connect(m_pControlChainNextPreset, SIGNAL(valueChanged(double)),
             this, SLOT(slotControlChainNextPreset(double)));
 
-    m_pControlChainPrevPreset = new ControlObject(ConfigKey(m_group, "prev_chain"));
+    m_pControlChainPrevPreset = new ControlPushButton(ConfigKey(m_group, "prev_chain"));
+    // actually make it a push button and set it to toggle.
+    m_pControlChainPrevPreset->setButtonMode(ControlPushButton::TOGGLE);
     connect(m_pControlChainPrevPreset, SIGNAL(valueChanged(double)),
             this, SLOT(slotControlChainPrevPreset(double)));
 }
