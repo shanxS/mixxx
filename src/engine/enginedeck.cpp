@@ -63,7 +63,7 @@ EngineDeck::EngineDeck(const char* group,
     m_pBuffer = new EngineBuffer(group, pConfig, this, pMixingEngine);
     m_pVinylSoundEmu = new EngineVinylSoundEmu(pConfig, group);
     m_pVUMeter = new EngineVuMeter(group);
-    m_pEffectsManager->registerChannel(getGroup());
+    m_pEffectsManager->registerChannel(group);
 }
 
 EngineDeck::~EngineDeck() {

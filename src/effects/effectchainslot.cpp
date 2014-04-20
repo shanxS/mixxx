@@ -19,7 +19,9 @@ EffectChainSlot::EffectChainSlot(QObject* pParent, unsigned int iChainNumber)
     connect(m_pControlNumEffects, SIGNAL(valueChanged(double)),
             this, SLOT(slotControlNumEffects(double)));
 
-    m_pControlChainEnabled = new ControlObject(ConfigKey(m_group, "enabled"));
+    m_pControlChainEnabled = new ControlPushButton(ConfigKey(m_group, "enabled"));
+    // actually make it a push button and set it to toggle.
+    m_pControlChainEnabled->setButtonMode(ControlPushButton::TOGGLE);
     connect(m_pControlChainEnabled, SIGNAL(valueChanged(double)),
             this, SLOT(slotControlChainEnabled(double)));
     // Default chain to enabled.

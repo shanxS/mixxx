@@ -11,6 +11,7 @@
 #include "effects/effectslot.h"
 #include "effects/effectchain.h"
 
+class ControlPushButton;
 class EffectChainSlot;
 typedef QSharedPointer<EffectChainSlot> EffectChainSlotPointer;
 
@@ -102,7 +103,7 @@ class EffectChainSlot : public QObject {
     EffectChainPointer m_pEffectChain;
 
     ControlObject* m_pControlNumEffects;
-    ControlObject* m_pControlChainEnabled;
+    ControlPushButton* m_pControlChainEnabled;
     ControlObject* m_pControlChainMix;
     ControlObject* m_pControlChainParameter;
     ControlObject* m_pControlChainNextPreset;
