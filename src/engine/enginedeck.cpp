@@ -26,6 +26,8 @@
 #include "engine/enginefilterblock.h"
 #include "engine/enginevumeter.h"
 #include "engine/enginefilteriir.h"
+#include "engine/enginemaster.h"
+#include "effects/effectsmanager.h"
 
 #include "sampleutil.h"
 
@@ -35,6 +37,7 @@ EngineDeck::EngineDeck(const char* group,
                        EngineChannel::ChannelOrientation defaultOrientation)
         : EngineChannel(group, defaultOrientation),
           m_pConfig(pConfig),
+          m_pEffectsManager(pMixingEngine->getEffectsManager()),
           m_pPassing(new ControlPushButton(ConfigKey(group, "passthrough"))),
           // Need a +1 here because the CircularBuffer only allows its size-1
           // items to be held at once (it keeps a blank spot open persistently)
@@ -60,6 +63,7 @@ EngineDeck::EngineDeck(const char* group,
     m_pBuffer = new EngineBuffer(group, pConfig, this, pMixingEngine);
     m_pVinylSoundEmu = new EngineVinylSoundEmu(pConfig, group);
     m_pVUMeter = new EngineVuMeter(group);
+    m_pEffectsManager->registerChannel(getGroup());
 }
 
 EngineDeck::~EngineDeck() {
@@ -77,6 +81,8 @@ EngineDeck::~EngineDeck() {
 }
 
 void EngineDeck::process(const CSAMPLE*, CSAMPLE* pOut, const int iBufferSize) {
+    CSAMPLE* pOutput = const_cast<CSAMPLE*>(pOut);
+    
     // Feed the incoming audio through if passthrough is active
     if (isPassthroughActive()) {
         int samplesRead = m_sampleBuffer.read(pOut, iBufferSize);
@@ -110,6 +116,8 @@ void EngineDeck::process(const CSAMPLE*, CSAMPLE* pOut, const int iBufferSize) {
     m_pFilter->process(pOut, pOut, iBufferSize);
     m_pFlanger->process(pOut, pOut, iBufferSize);
     m_pFilterEffect->process(pOut, pOut, iBufferSize);
+    // Process effects enabled for this channel
+    m_pEffectsManager->process(getGroup(), pOut, pOutput, iBufferSize);
     // Apply clipping
     m_pClipping->process(pOut, pOut, iBufferSize);
     // Update VU meter

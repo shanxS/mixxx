@@ -39,16 +39,19 @@
 #include "util/trace.h"
 #include "playermanager.h"
 #include "engine/channelmixer.h"
+#include "effects/effectsmanager.h"
 
 EngineMaster::EngineMaster(ConfigObject<ConfigValue>* _config,
                            const char* group,
                            bool bEnableSidechain,
+                           EffectsManager* pEffectsManager,
                            bool bRampingGain)
         : m_bRampingGain(bRampingGain),
           m_headphoneMasterGainOld(0.0),
           m_headphoneVolumeOld(1.0),
           m_bMasterOutputConnected(false),
-          m_bHeadphoneOutputConnected(false) {
+          m_bHeadphoneOutputConnected(false),
+          m_pEffectsManager(pEffectsManager) {
     m_bBusOutputConnected[0] = false;
     m_bBusOutputConnected[1] = false;
     m_bBusOutputConnected[2] = false;
@@ -69,6 +72,8 @@ EngineMaster::EngineMaster(ConfigObject<ConfigValue>* _config,
 
     // Master sync controller
     m_pMasterSync = new EngineSync(_config);
+    
+    m_pEffectsManager->registerChannel(getMasterChannelId());
 
     // The last-used bpm value is saved in the destructor of EngineSync.
     double default_bpm = _config->getValueString(ConfigKey("[InternalClock]", "bpm"),
@@ -360,6 +365,8 @@ void EngineMaster::process(const int iBufferSize) {
         }
     }
 
+    m_pEffectsManager->process(getMasterChannelId(), m_pMaster, m_pMaster, iBufferSize);
+    
     // Mix the three channels together. We already mixed the busses together
     // with the channel gains and overall master gain.
     SampleUtil::copy3WithGain(m_pMaster,

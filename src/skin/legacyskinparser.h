@@ -21,6 +21,8 @@ class ControllerManager;
 class SkinContext;
 class WLabel;
 class ControlObject;
+class EffectsManager;
+
 
 class LegacySkinParser : public QObject, public SkinParser {
     Q_OBJECT
@@ -28,7 +30,8 @@ class LegacySkinParser : public QObject, public SkinParser {
     LegacySkinParser(ConfigObject<ConfigValue>* pConfig,
                      MixxxKeyboard* pKeyboard, PlayerManager* pPlayerManager,
                      ControllerManager* pControllerManager,
-                     Library* pLibrary, VinylControlManager* pVCMan);
+                     Library* pLibrary, VinylControlManager* pVCMan,
+                     EffectsManager* pEffectsManager);
     virtual ~LegacySkinParser();
 
     virtual bool canParse(QString skinPath);
@@ -89,6 +92,9 @@ class LegacySkinParser : public QObject, public SkinParser {
     QWidget* parseLibrary(QDomElement node);
     QWidget* parseLibrarySidebar(QDomElement node);
 
+    // Effects chain name.
+    QWidget* parseEffectChainName(QDomElement node);
+    
     // Renders a template.
     QList<QWidget*> parseTemplate(QDomElement node);
 
@@ -114,6 +120,7 @@ class LegacySkinParser : public QObject, public SkinParser {
     ControllerManager* m_pControllerManager;
     Library* m_pLibrary;
     VinylControlManager* m_pVCManager;
+    EffectsManager* m_pEffectsManager;
     QWidget* m_pParent;
     SkinContext* m_pContext;
     Tooltips m_tooltips;

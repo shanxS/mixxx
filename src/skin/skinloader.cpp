@@ -77,9 +77,10 @@ QWidget* SkinLoader::loadDefaultSkin(QWidget* pParent,
                                      PlayerManager* pPlayerManager,
                                      ControllerManager* pControllerManager,
                                      Library* pLibrary,
-                                     VinylControlManager* pVCMan) {
+                                     VinylControlManager* pVCMan,
+                                     EffectsManager* pEffectsManager) {
     QString skinPath = getConfiguredSkinPath();
 
-    LegacySkinParser legacy(m_pConfig, pKeyboard, pPlayerManager, pControllerManager, pLibrary, pVCMan);
+    LegacySkinParser legacy(m_pConfig, pKeyboard, pPlayerManager, pControllerManager, pLibrary, pVCMan, pEffectsManager);
     return legacy.parseSkin(skinPath, pParent);
 }

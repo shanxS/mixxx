@@ -40,6 +40,7 @@ class SyncWorker;
 class GuiTick;
 class EngineSync;
 class EngineTalkoverDucking;
+class EffectsManager;
 
 class EngineMaster : public QObject, public AudioSource {
     Q_OBJECT
@@ -47,6 +48,7 @@ class EngineMaster : public QObject, public AudioSource {
     EngineMaster(ConfigObject<ConfigValue>* pConfig,
                  const char* pGroup,
                  bool bEnableSidechain,
+                 EffectsManager* pEffectsManager,
                  bool bRampingGain=true);
     virtual ~EngineMaster();
 
@@ -95,6 +97,14 @@ class EngineMaster : public QObject, public AudioSource {
     const CSAMPLE* getDeckBuffer(unsigned int i) const;
     const CSAMPLE* getChannelBuffer(QString name) const;
 
+    EffectsManager* getEffectsManager() const {
+        return m_pEffectsManager;
+    }
+    
+    const QString getMasterChannelId() const {
+        return QString("[Master]");
+    }
+    
     EngineSideChain* getSideChain() const {
         return m_pSideChain;
     }
@@ -188,6 +198,7 @@ class EngineMaster : public QObject, public AudioSource {
     EngineClipping* m_pClipping;
     EngineClipping* m_pHeadClipping;
     EngineTalkoverDucking* m_pTalkoverDucking;
+    EffectsManager* m_pEffectsManager;
 
     EngineVuMeter* m_pVumeter;
     EngineSideChain* m_pSideChain;

@@ -556,6 +556,20 @@ class MixxxCore(Feature):
                    "dlgautodj.cpp",
                    "dlghidden.cpp",
                    "dlgmissing.cpp",
+                   
+                   "effects/effectmanifest.cpp",
+                   "effects/effectmanifestparameter.cpp",
+                   "effects/effectchain.cpp",
+                   "effects/effect.cpp",
+                   "effects/effectparameter.cpp",
+                   "effects/effectchainslot.cpp",
+                   "effects/effectslot.cpp",
+                   "effects/effectparameterslot.cpp",
+                   "effects/effectsmanager.cpp",
+                   "effects/effectchainmanager.cpp",
+                   "effects/effectsbackend.cpp",
+                   "effects/native/nativebackend.cpp",
+                   "effects/native/flangereffect.cpp",
 
                    "engine/sync/basesyncablelistener.cpp",
                    "engine/sync/enginesync.cpp",
@@ -665,6 +679,7 @@ class MixxxCore(Feature):
                    "widget/wkey.cpp",
                    "widget/wcombobox.cpp",
                    "widget/wsplitter.cpp",
+                   "widget/weffectchain.cpp",
 
                    "mathstuff.cpp",
 

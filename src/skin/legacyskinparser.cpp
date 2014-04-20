@@ -27,6 +27,8 @@
 #include "skin/colorschemeparser.h"
 #include "skin/skincontext.h"
 
+#include "effects/effectsmanager.h"
+
 #include "widget/controlwidgetconnection.h"
 #include "widget/wbasewidget.h"
 #include "widget/wwidget.h"
@@ -59,6 +61,7 @@
 #include "widget/wkey.h"
 #include "widget/wcombobox.h"
 #include "widget/wsplitter.h"
+#include "widget/weffectchain.h"
 #include "util/valuetransformer.h"
 
 using mixxx::skin::SkinManifest;
@@ -112,13 +115,15 @@ LegacySkinParser::LegacySkinParser(ConfigObject<ConfigValue>* pConfig,
                                    PlayerManager* pPlayerManager,
                                    ControllerManager* pControllerManager,
                                    Library* pLibrary,
-                                   VinylControlManager* pVCMan)
+                                   VinylControlManager* pVCMan,
+                                   EffectsManager* pEffectsManager)
         : m_pConfig(pConfig),
           m_pKeyboard(pKeyboard),
           m_pPlayerManager(pPlayerManager),
           m_pControllerManager(pControllerManager),
           m_pLibrary(pLibrary),
           m_pVCManager(pVCMan),
+          m_pEffectsManager(pEffectsManager),
           m_pParent(NULL),
           m_pContext(NULL) {
 }
@@ -429,6 +434,8 @@ QList<QWidget*> LegacySkinParser::parseNode(QDomElement node) {
         result = wrapWidget(parseWidgetGroup(node));
     } else if (nodeName == "WidgetStack") {
         result = wrapWidget(parseWidgetStack(node));
+    } else if (nodeName == "EffectChainName") {
+        result = wrapWidget(parseEffectChainName(node));
     } else if (nodeName == "Spinny") {
         result = wrapWidget(parseSpinny(node));
     } else if (nodeName == "Time") {
@@ -954,6 +961,26 @@ QWidget* LegacySkinParser::parseLibrarySidebar(QDomElement node) {
     setupBaseWidget(node, pLibrarySidebar);
     setupWidget(node, pLibrarySidebar);
     return pLibrarySidebar;
+}
+
+QWidget* LegacySkinParser::parseEffectChainName(QDomElement node) {
+    WEffectChain* pEffectChain = new WEffectChain(m_pParent);
+
+    // To Mixxx users, EffectChains are 1-indexed, but code-wise the chains are
+    // 0-indexed.
+    unsigned int chainNumber = XmlParse::selectNodeInt(node, "EffectChain") - 1;
+
+    EffectChainSlotPointer pChainSlot = m_pEffectsManager->getEffectChainSlot(chainNumber);
+
+    if (pChainSlot) {
+        pEffectChain->setEffectChainSlot(pChainSlot);
+    } else {
+        qDebug() << "EffectChainName node had invalid EffectChainSlot number.";
+    }
+
+    setupWidget(node, pEffectChain);
+    pEffectChain->installEventFilter(m_pKeyboard);
+    return pEffectChain;
 }
 
 QWidget* LegacySkinParser::parseTableView(QDomElement node) {
